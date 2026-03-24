@@ -12,7 +12,9 @@ from selenium.webdriver.common.by import By
 from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
-CORS(app) 
+
+# Configuração agressiva de CORS para aceitar qualquer origem e os headers necessários
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 def sniper_engine(url_target):
     if not url_target.startswith(('http://', 'https://')):
