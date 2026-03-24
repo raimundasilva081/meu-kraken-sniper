@@ -1,9 +1,14 @@
 FROM python:3.10-slim
 
-WORKDIR /app
+RUN apt-get update && apt-get install -y wget unzip curl gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && apt-get install -y chromium-driver \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalação do Chrome numa linha só (ignora problemas do Windows e foca no download direto)
-RUN apt-get update && apt-get install -y wget unzip curl && wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt-get install -y ./google-chrome-stable_current_amd64.deb && rm google-chrome-stable_current_amd64.deb && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -12,4 +17,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "4", "--timeout", "120", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "2", "--timeout", "120", "app:app"]
