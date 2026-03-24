@@ -29,8 +29,13 @@ def sniper_engine(url_target):
     chrome_options.add_argument("--disable-gpu") # IMPORTANTE: Adicionado para evitar crash no Linux (Render)
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
     
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    driver.set_page_load_timeout(35)
+try:
+        # No Docker do Render, o motor fica nesse caminho padrão:
+        service = Service("/usr/bin/chromedriver") 
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+    except Exception as e:
+        # Se não achar no caminho acima, tenta o modo automático padrão do Selenium 4
+        driver = webdriver.Chrome(options=chrome_options)
     
     res = {
         "target": url_target, "status": False, "domain": "", "ip": "", 
