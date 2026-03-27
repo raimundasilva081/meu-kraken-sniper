@@ -34,7 +34,7 @@ try:
         service = Service("/usr/bin/chromedriver") 
         driver = webdriver.Chrome(service=service, options=chrome_options)
     except Exception as e:
-        # Se não achar no caminho acima, tenta o modo automático padrão do Selenium 4
+        # Se não achar no caminho acima, tenta o modo automático padrão
         driver = webdriver.Chrome(options=chrome_options)
     
     res = {
